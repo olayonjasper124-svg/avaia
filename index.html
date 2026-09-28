@@ -6,16 +6,58 @@
 <meta name="description" content="Wedding films crafted with intention.">
 <title>Avaia Films</title>
 
-<!-- Pinalaking Favicon para sa tab ng browser -->
+<!-- Favicon -->
 <link rel="icon" type="image/png" href="assets/logo/logo.png" sizes="64x64">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Jost:wght@300;400&display=swap" rel="stylesheet">
-<!-- FontAwesome para sa mga social media logo icons -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link rel="stylesheet" href="style.css">
 <style>
+  /* Styling para sa Header: Walang linya at walang background sa umpisa, lalabas ang dark pink gradient kapag nag-scroll */
+  .header {
+    position: fixed !important;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    background: transparent !important;
+    border-bottom: none !important;
+    box-shadow: none !important;
+    transition: background 0.4s ease, box-shadow 0.4s ease;
+  }
+  
+  /* Kapag nag-scroll na pababa, magkakaroon ng medyo dark pink gradient background */
+  .header.scrolled {
+    background: linear-gradient(135deg, rgba(65, 35, 42, 0.95), rgba(45, 25, 30, 0.95)) !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    border-bottom: none !important;
+  }
+
+  .header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to right, rgba(90, 45, 55, 0.4), rgba(50, 25, 30, 0.6));
+    z-index: 1;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+  }
+
+  .header.scrolled::before {
+    opacity: 1;
+  }
+
+  .header > * {
+    position: relative;
+    z-index: 2;
+  }
+
   /* Styling para sa maliliit na social logos sa ilalim ng Avaia Stories */
   .brand-container {
     display: flex;
@@ -37,7 +79,7 @@
     opacity: 1;
   }
 
-  /* Pinalambot at ginawang overlay ang play button para sa main video */
+  /* Play button overlay para sa main video */
   .video-wrap .play {
     background: rgba(0, 0, 0, 0.35) !important;
     border: 1px solid rgba(255, 255, 255, 0.4) !important;
@@ -52,12 +94,12 @@
     border-left-color: #ffffff !important;
   }
 
-  /* Inilagay ang background image mula sa Featured Films section pababa sa buong ibabang bahagi */
+  /* Background image mula sa Featured Films section pababa */
   #films, #experience, #testimonials, #contact, footer {
     background: url('assets/background.jpg') center/cover no-repeat fixed !important;
   }
 
-  /* Keyframes para sa slow gradient glow na mismong sa logo dumadaloy */
+  /* Keyframes para sa slow gradient glow sa logo */
   @keyframes logoGradientGlow {
     0% {
       filter: drop-shadow(0 0 4px rgba(212, 165, 165, 0.4)) drop-shadow(0 0 10px rgba(255, 255, 255, 0.2));
@@ -70,7 +112,6 @@
     }
   }
 
-  /* Styling para sa Pinalaking Logo (x3) sa Taas ng Other Featured Films */
   .section-logo-container {
     text-align: center;
     margin: 50px 0 5px 0;
@@ -83,7 +124,7 @@
     display: inline-block;
   }
 
-  /* Styling para sa Other Featured Films Grid Cards (na may rounded corners at title overlay sa ibaba) */
+  /* Grid Cards para sa Other Featured Films na may object-position para hindi maputol mukha */
   .film-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
@@ -107,18 +148,20 @@
     position: relative;
     width: 100%;
     aspect-ratio: 16/9;
+    overflow: hidden;
+    background: #ccc;
   }
   .film-card .thumb img {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    object-position: center 30%; /* Na-adjust para makita nang maayos ang mga mukha */
     display: block;
-    transition: transform 0.5s ease;
+    transition: transform 0.8s ease;
   }
   .film-card:hover .thumb img {
-    transform: scale(1.03);
+    transform: scale(1.06);
   }
-  /* Gradient overlay sa ibaba para mabasa ang pangalan */
   .film-card .thumb::after {
     content: '';
     position: absolute;
@@ -154,7 +197,7 @@
     margin-top: 2px;
   }
 
-  /* Modal Player para sa Grid Videos (Fullscreen Popup na may pangalan sa ibaba at close button) */
+  /* Modal Player para sa Grid Videos */
   #videoModal {
     display: none;
     position: fixed;
@@ -227,7 +270,7 @@
     margin-top: 4px;
   }
 
-  /* Seamless Infinite Continuous Slideshow para sa About Section */
+  /* Seamless Infinite Slideshow para sa About Section */
   .about {
     position: relative;
     background-color: #0b0b0b;
@@ -277,27 +320,6 @@
   }
   .about-box p {
     color: rgba(255, 255, 255, 0.9);
-  }
-
-  /* MOBILE RESPONSIVE OPTIMIZATIONS (Para hindi masyadong naka-zoom o malaki sa phone) */
-  @media screen and (max-width: 768px) {
-    .film-grid {
-      grid-template-columns: 1fr; /* Isang column na lang kada hilera sa cellphone */
-      gap: 20px;
-    }
-    .hero-content h1 {
-      font-size: 28px !important;
-      padding: 0 15px;
-    }
-    .hero-content p {
-      font-size: 14px !important;
-    }
-    .section-logo {
-      width: 120px; /* I-adjust nang konti ang laki ng logo sa mobile para sakto */
-    }
-    .about-box {
-      padding: 40px 20px !important;
-    }
   }
 </style>
 </head>
@@ -388,7 +410,7 @@
       <p class="type">Same-Day Edit</p>
     </div>
 
-    <!-- Pinalaking Logo (x3) na may Slow Gradient Glow bago ang Other Featured Films -->
+    <!-- Pinalaking Logo (x3) bago ang Other Featured Films -->
     <div class="section-logo-container">
       <img src="assets/logo/logo.png" alt="Logo" class="section-logo">
     </div>
@@ -406,34 +428,34 @@
         </div>
       </div>
 
-      <!-- Ian & Reanne -->
+      <!-- Danny & Rejina -->
       <div class="film-card reveal" onclick="openVideoModal('assets/videos/ian-reanne.mp4', 'Ian & Reanne', 'Wedding Film')">
         <div class="thumb">
           <img src="assets/thumbs/film-1.jpg" alt="Ian &amp; Reanne">
           <div class="card-info">
-            <h3>Ian &amp; Reanne</h3>
+            <h3>Danny &amp; Rejina</h3>
             <p class="type">Wedding Film</p>
           </div>
         </div>
       </div>
 
-      <!-- Jerome & Nonia -->
+      <!-- Harold & Jane -->
       <div class="film-card reveal" onclick="openVideoModal('assets/videos/jerome-nonia.mp4', 'Jerome & Nonia', 'Same-Day Edit')">
         <div class="thumb">
           <img src="assets/thumbs/film-2.jpg" alt="Jerome &amp; Nonia">
           <div class="card-info">
-            <h3>Jerome &amp; Nonia</h3>
+            <h3>Harold &amp; Jane</h3>
             <p class="type">Same-Day Edit</p>
           </div>
         </div>
       </div>
 
-      <!-- John & Czarah -->
+      <!-- Jasper & Who? -->
       <div class="film-card reveal" onclick="openVideoModal('assets/videos/john-czarah.mp4', 'John & Czarah', 'Pre-Wedding Film')">
         <div class="thumb">
           <img src="assets/thumbs/film-3.jpg" alt="John &amp; Czarah">
           <div class="card-info">
-            <h3>John &amp; Czarah</h3>
+            <h3>Jasper &amp; Who?</h3>
             <p class="type">Pre-Wedding Film</p>
           </div>
         </div>
@@ -473,20 +495,20 @@
   <div class="slides" id="slides">
     <article class="slide on" style="--img:url('assets/thumbs/testi-1.jpg')">
       <div class="slide-text">
-        <h3>Nigel &amp; Lorraine</h3>
-        <blockquote>“Pure professionals! Cinematic! Everything was on point, the flow, the vibe etc. Would definitely recommend this team for your special day. ✨”</blockquote>
+        <h3>Danny &amp; Angel</h3>
+        <blockquote>“Ikaw ang bugtong itik nga nag kapa2 sa akong malapukon na kasing2”</blockquote>
       </div>
     </article>
     <article class="slide" style="--img:url('assets/thumbs/testi-2.jpg')">
       <div class="slide-text">
-        <h3>Cyril &amp; Diana</h3>
-        <blockquote>“We chose them because their videos have real substance, a story, and they truly touch the heart and soul.”</blockquote>
+        <h3>Harold &amp; Jane</h3>
+        <blockquote>“Sama ka sa kanta ni dionela nga "Oksihina" kay kung wala ka, mag lisud ko ug Ginhawa.”</blockquote>
       </div>
     </article>
     <article class="slide" style="--img:url('assets/thumbs/testi-3.jpg')">
       <div class="slide-text">
-        <h3>Venz &amp; Gerly</h3>
-        <blockquote>“Instead of just making the Prenup and SDE video, they made a masterpiece that we will never forget and cannot stop watching it all over again. Truly amazing! A lot of good feedback with our prenup and SDE video.<br><br>To the team Avenoir especially to sir Ian, thank you so much for putting a lot of efforts in making our videos. You really exceeded our expectations. ❤️”</blockquote>
+        <h3>HAROLD PADILLA</h3>
+        <blockquote>“Also Known as Plong2x the Photographer”</blockquote>
       </div>
     </article>
   </div>
@@ -535,10 +557,25 @@
   </div>
 </section>
 
-<footer>© <span id="year"></span> Avenoir Film Production. All rights reserved.</footer>
+<footer>© <span id="year"></span> Avaia Films. All rights reserved.</footer>
 
 <script src="script.js"></script>
 <script>
+  // JavaScript para lumitaw ang dark pink gradient background kapag nag-scroll na pababa sa films section
+  window.addEventListener('scroll', function() {
+    const header = document.getElementById('header');
+    const filmsSection = document.getElementById('films');
+    
+    if (filmsSection) {
+      const filmsPosition = filmsSection.getBoundingClientRect().top;
+      if (filmsPosition <= 50) {
+        header.classList.add('scrolled');
+      } else {
+        header.classList.remove('scrolled');
+      }
+    }
+  });
+
   // JavaScript para sa Popup Modal Player ng Grid Videos
   function openVideoModal(videoSrc, title, type) {
     const modal = document.getElementById('videoModal');
