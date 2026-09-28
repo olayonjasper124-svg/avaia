@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Wedding films crafted with intention.">
+<title>Avaia Films</title>
+
+<!-- Pinalaking Favicon para sa tab ng browser -->
+<link rel="icon" type="image/png" href="assets/logo/logo.png" sizes="64x64">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Jost:wght@300;400&display=swap" rel="stylesheet">
+<!-- FontAwesome para sa mga social media logo icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="style.css">
+<style>
+  /* Styling para sa Header: Nakatago sa simula (first page) at lilitaw lang kapag nag-scroll na pababa na may medyo dark pink gradient */
+  .header {
+    position: fixed !important;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    background: linear-gradient(135deg, rgba(215, 185, 154, 0.64), rgba(123, 10, 38, 0)) !important;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-20px);
+    transition: opacity 0.4s ease, transform 0.4s ease, visibility 0.4s ease;
+  }
+  
+  /* Class na magpapakita sa header kapag nag-scroll na */
+  .header.visible {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+
+  .header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to right, rgba(90, 45, 55, 0.4), rgba(50, 25, 30, 0.6)); /* Malambot at eleganteng dark pink gradient */
+    z-index: 1;
+    pointer-events: none;
+  }
+  .header > * {
+    position: relative;
+    z-index: 2;
+  }
+
+  /* Styling para sa maliliit na social logos sa ilalim ng Avaia Stories */
+  .brand-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .brand-socials {
+    display: flex;
+    gap: 12px;
+    margin-top: 4px;
+  }
+  .brand-socials a {
+    color: #ffffff;
+    font-size: 12px;
+    opacity: 0.7;
+    transition: opacity 0.3s ease;
+  }
+  .brand-socials a:hover {
+    opacity: 1;
+  }
+
+  /* Pinalambot at ginawang overlay ang play button para sa main video */
+  .video-wrap .play {
+    background: rgba(0, 0, 0, 0.35) !important;
+    border: 1px solid rgba(255, 255, 255, 0.4) !important;
+    backdrop-filter: blur(2px);
+    transition: all 0.3s ease;
+  }
+  .video-wrap .play:hover {
+    background: rgba(0, 0, 0, 0.55) !important;
+    border-color: rgba(255, 255, 255, 0.8) !important;
+  }
+  .video-wrap .play i {
+    border-left-color: #ffffff !important;
+  }
+
+  /* Inilagay ang background image mula sa Featured Films section pababa sa buong ibabang bahagi */
+  #films, #experience, #testimonials, #contact, footer {
+    background: url('assets/background.jpg') center/cover no-repeat fixed !important;
+  }
+
+  /* Keyframes para sa slow gradient glow na mismong sa logo dumadaloy */
+  @keyframes logoGradientGlow {
+    0% {
+      filter: drop-shadow(0 0 4px rgba(212, 165, 165, 0.4)) drop-shadow(0 0 10px rgba(255, 255, 255, 0.2));
+    }
+    50% {
+      filter: drop-shadow(0 0 15px rgba(240, 180, 180, 0.9)) drop-shadow(0 0 30px rgba(212, 130, 130, 0.7));
+    }
+    100% {
+      filter: drop-shadow(0 0 4px rgba(212, 165, 165, 0.4)) drop-shadow(0 0 10px rgba(255, 255, 255, 0.2));
+    }
+  }
+
+  /* Styling para sa Pinalaking Logo (x3) sa Taas ng Other Featured Films */
+  .section-logo-container {
+    text-align: center;
+    margin: 50px 0 5px 0;
+  }
+  .section-logo {
+    width: 160px; /* Pinalaki nang x3 ang sukat */
+    height: auto;
+    object-fit: contain;
+    animation: logoGradientGlow 6s ease-in-out infinite;
+    display: inline-block;
+  }
+
+  /* Styling para sa Other Featured Films Grid Cards (na may rounded corners at title overlay sa ibaba) */
+  .film-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 30px;
+    margin-top: 30px;
+  }
+  .film-card {
+    position: relative;
+    border-radius: 16px;
+    overflow: hidden;
+    cursor: pointer;
+    background: #000;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  .film-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+  }
+  .film-card .thumb {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16/9;
+  }
+  .film-card .thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.5s ease;
+  }
+  .film-card:hover .thumb img {
+    transform: scale(1.03);
+  }
+  /* Gradient overlay sa ibaba para mabasa ang pangalan */
+  .film-card .thumb::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 60%;
+    background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0) 100%);
+    pointer-events: none;
+  }
+  .film-card .card-info {
+    position: absolute;
+    bottom: 15px;
+    left: 20px;
+    right: 20px;
+    z-index: 2;
+    pointer-events: none;
+  }
+  .film-card h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 20px;
+    font-weight: 400;
+    color: #fff;
+    margin: 0;
+    letter-spacing: 0.5px;
+  }
+  .film-card .type {
+    font-family: 'Jost', sans-serif;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: rgba(255,255,255,0.7);
+    margin-top: 2px;
+  }
+
+  /* Modal Player para sa Grid Videos (Fullscreen Popup na may pangalan sa ibaba at close button) */
+  #videoModal {
+    display: none;
+    position: fixed;
+    z-index: 9999;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.9);
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    padding: 20px;
+    box-sizing: border-box;
+  }
+  #videoModal.active {
+    display: flex;
+  }
+  .modal-content-wrap {
+    position: relative;
+    width: 100%;
+    max-width: 1000px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .modal-close {
+    position: absolute;
+    top: -45px;
+    right: 0;
+    background: rgba(255,255,255,0.2);
+    border: none;
+    color: #fff;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    font-size: 18px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.3s;
+  }
+  .modal-close:hover {
+    background: rgba(255,255,255,0.4);
+  }
+  #modalVideo {
+    width: 100%;
+    max-height: 75vh;
+    border-radius: 8px;
+    background: #000;
+    outline: none;
+  }
+  .modal-details {
+    text-align: center;
+    margin-top: 15px;
+  }
+  .modal-details h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 24px;
+    color: #fff;
+    margin: 0;
+  }
+  .modal-details p {
+    font-family: 'Jost', sans-serif;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: rgba(255,255,255,0.7);
+    margin-top: 4px;
+  }
+
+  /* Seamless Infinite Continuous Slideshow para sa About Section */
+  .about {
+    position: relative;
+    background-color: #0b0b0b;
+    overflow: hidden;
+  }
+  .about-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+  }
+  .about-bg img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    transition: opacity 2s ease-in-out;
+  }
+  .about-bg img.on {
+    opacity: 1;
+  }
+  .about::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.55);
+    z-index: 2;
+  }
+  .about-box {
+    position: relative;
+    z-index: 3;
+    color: #ffffff;
+  }
+  .about-box .label {
+    color: rgba(255, 255, 255, 0.8);
+  }
+  .about-box h2 {
+    color: #ffffff;
+  }
+  .about-box p {
+    color: rgba(255, 255, 255, 0.9);
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header" id="header">
+  <div class="brand-container">
+    <a href="#home" class="brand">Avaia Stories</a>
+    <div class="brand-socials">
+      <a href="https://www.facebook.com/avaiastudios" target="_blank" rel="noopener" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+      <a href="https://m.me/avaiastudios" target="_blank" rel="noopener" aria-label="Messenger"><i class="fa-brands fa-facebook-messenger"></i></a>
+      <a href="https://www.instagram.com/" target="_blank" rel="noopener" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+      <a href="https://www.tiktok.com" target="_blank" rel="noopener" aria-label="TikTok"><i class="fa-brands fa-tiktok"></i></a>
+    </div>
+  </div>
+  <nav class="nav-desktop">
+    <a href="#experience">Experience</a>
+    <a href="#about">About</a>
+  </nav>
+  <button class="menu-btn" id="menuBtn" aria-label="Open menu" aria-expanded="false"><span></span><span></span></button>
+</header>
+
+<!-- FULLSCREEN MENU -->
+<div class="menu" id="menu" aria-hidden="true">
+  <nav>
+    <a href="#home">Home</a>
+    <a href="#films">Featured</a>
+    <a href="#experience">Experience</a>
+    <a href="#about">About</a>
+  </nav>
+  <div class="menu-social">
+    <a href="https://www.facebook.com/avenoirfilmproduction" target="_blank" rel="noopener">Facebook</a>
+    <a href="https://m.me/avenoirfilmproduction" target="_blank" rel="noopener">Messenger</a>
+    <a href="https://www.instagram.com/avenoir.film" target="_blank" rel="noopener">Instagram</a>
+  </div>
+</div>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <video class="hero-video" autoplay muted loop playsinline poster="assets/images/bg01.jpg">
+    <source src="assets/cover.mp4" type="video/mp4">
+  </video>
+  <div class="hero-shade"></div>
+  <div class="hero-content">
+    <h1>stories that echo in the heart</h1>
+    <p>crafted with intention</p>
+    <div class="hero-btns">
+      <a href="#films" class="btn">featured</a>
+      <a href="#contact" class="btn btn-fill">Inquire</a>
+    </div>
+  </div>
+  <a href="#home" class="to-top" id="toTop">back to top</a>
+</section>
+
+<!-- ABOUT SECTION -->
+<section class="about" id="about">
+  <div class="about-bg" id="aboutBg">
+    <img src="assets/team/team-1.jpg" alt="Team 1" class="on">
+    <img src="assets/team/team-2.jpg" alt="Team 2">
+    <img src="assets/team/team-3.jpg" alt="Team 3">
+    <img src="assets/team/team-4.jpg" alt="Team 4">
+    <img src="assets/team/team-5.jpg" alt="Team 5">
+  </div>
+  <div class="about-box reveal">
+    <span class="label">About Avaia</span>
+    <h2>stories over spectacle</h2>
+    <p>We believe wedding films should feel timeless. Rather than simply documenting events, we create films that preserve emotions, relationships, and moments that define your story.</p>
+    <p>Every couple has a journey unlike any other, and we approach each celebration with intention, care, and authenticity. Through thoughtful storytelling and cinematic craftsmanship, we create films that allow you to relive not only how your wedding looked, but how it felt—so that every laugh, every tear, and every quiet glance can be cherished for generations to come.</p>
+  </div>
+</section>
+
+<!-- FEATURED FILMS -->
+<section class="films" id="films">
+  <div class="container">
+    <span class="label">Featured Films</span>
+    <h2 class="reveal">recent stories</h2>
+
+    <!-- Main Video sa Taas -->
+    <div class="main-film reveal">
+      <div class="video-wrap" id="mainFilm">
+        <video id="filmVideo" preload="metadata" poster="assets/thumbs/film-main.jpg" playsinline>
+          <source src="assets/videos/recent1.mp4" type="video/mp4">
+        </video>
+        <button class="play" id="playBtn" aria-label="Play film"><i></i></button>
+      </div>
+      <h3>Rocky &amp; Sherly</h3>
+      <p class="type">Same-Day Edit</p>
+    </div>
+
+    <!-- Pinalaking Logo (x3) na may Slow Gradient Glow bago ang Other Featured Films -->
+    <div class="section-logo-container">
+      <img src="assets/logo/logo.png" alt="Logo" class="section-logo">
+    </div>
+    <p class="sub" style="margin-top: 5px;">other featured films</p>
+
+    <div class="film-grid">
+      <!-- Princess & Julius -->
+      <div class="film-card reveal" onclick="openVideoModal('assets/videos/princess-julius.mp4', 'Princess & Julius', 'Wedding Film')">
+        <div class="thumb">
+          <img src="assets/thumbs/film-princess.jpg" alt="Princess &amp; Julius">
+          <div class="card-info">
+            <h3>Princess &amp; Julius</h3>
+            <p class="type">Wedding Film</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Danny & Rejina -->
+      <div class="film-card reveal" onclick="openVideoModal('assets/videos/ian-reanne.mp4', 'Ian & Reanne', 'Wedding Film')">
+        <div class="thumb">
+          <img src="assets/thumbs/film-1.jpg" alt="Ian &amp; Reanne">
+          <div class="card-info">
+            <h3>Danny &amp; Rejina</h3>
+            <p class="type">Wedding Film</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Jerome & Nonia -->
+      <div class="film-card reveal" onclick="openVideoModal('assets/videos/jerome-nonia.mp4', 'Jerome & Nonia', 'Same-Day Edit')">
+        <div class="thumb">
+          <img src="assets/thumbs/film-2.jpg" alt="Jerome &amp; Nonia">
+          <div class="card-info">
+            <h3>Harold &amp; Jane</h3>
+            <p class="type">Same-Day Edit</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Jasper & Who? -->
+      <div class="film-card reveal" onclick="openVideoModal('assets/videos/john-czarah.mp4', 'John & Czarah', 'Pre-Wedding Film')">
+        <div class="thumb">
+          <img src="assets/thumbs/film-3.jpg" alt="John &amp; Czarah">
+          <div class="card-info">
+            <h3>Jasper &amp; Who?</h3>
+            <p class="type">Pre-Wedding Film</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="center"><a href="#" class="btn">view all</a></div>
+  </div>
+</section>
+
+<!-- MODAL POPUP PARA SA GRID VIDEOS -->
+<div id="videoModal">
+  <div class="modal-content-wrap">
+    <button class="modal-close" onclick="closeVideoModal()"><i class="fa-solid fa-xmark"></i></button>
+    <video id="modalVideo" controls autoplay playsinline></video>
+    <div class="modal-details">
+      <h3 id="modalTitle"></h3>
+      <p id="modalType"></p>
+    </div>
+  </div>
+</div>
+
+<!-- EXPERIENCE -->
+<section class="experience" id="experience">
+  <div class="container">
+    <span class="label">The Experience</span>
+    <h2 class="reveal">crafted with care</h2>
+    <div class="steps">
+      <div class="step reveal"><h3>discovery</h3><p>Getting to know your story, personalities, and what matters most.</p></div>
+      <div class="step reveal"><h3>craftsmanship</h3><p>Documenting moments naturally as they unfold on its own.</p></div>
+      <div class="step reveal"><h3>delivery</h3><p>Crafting timeless films designed to be revisited for years to come.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="testi" id="testimonials">
+  <div class="slides" id="slides">
+    <article class="slide on" style="--img:url('assets/thumbs/testi-1.jpg')">
+      <div class="slide-text">
+        <h3>Danny &amp; Angelica</h3>
+        <blockquote>“Pure professionals! Cinematic! Everything was on point, the flow, the vibe etc. Would definitely recommend this team for your special day. ✨”</blockquote>
+      </div>
+    </article>
+    <article class="slide" style="--img:url('assets/thumbs/testi-2.jpg')">
+      <div class="slide-text">
+        <h3>Harold &amp; Jane</h3>
+        <blockquote>“We chose them because their videos have real substance, a story, and they truly touch the heart and soul.”</blockquote>
+      </div>
+    </article>
+    <article class="slide" style="--img:url('assets/thumbs/testi-3.jpg')">
+      <div class="slide-text">
+        <h3>Harold Padilla</h3>
+        <blockquote>“Also known as Plong-Plong the Photographer”</blockquote>
+      </div>
+    </article>
+  </div>
+  <div class="dots" id="dots"></div>
+</section>
+
+<!-- CONTACT -->
+<section class="contact" id="contact">
+  <div class="container contact-grid">
+    <div class="contact-info reveal">
+      <span class="label">Contact</span>
+      <h2>let's grab a coffee</h2>
+      <img src="assets/emblem-only.png" alt="Avaia" class="emblem">
+      <h3>Avaia Films</h3>
+      <p>Butuan City, Philippines 8600</p>
+      <p><a href="mailto:hello@example.com">hello@example.com</a></p>
+      <p><a href="tel:+639171358400">+63 910 566 6383</a></p>
+      <div class="social-row">
+        <a href="https://www.facebook.com/avaiastudios" target="_blank" rel="noopener">Facebook</a>
+        <a href="https://m.me/avaiastudios" target="_blank" rel="noopener">Messenger</a>
+        <a href="https://www.instagram.com/avaiastudios" target="_blank" rel="noopener">Instagram</a>
+      </div>
+    </div>
+
+    <form class="contact-form reveal" id="contactForm" novalidate>
+      <label>Name *<input type="text" name="name" required></label>
+      <label>Email *<input type="email" name="email" required></label>
+      <label>Phone<input type="tel" name="phone"></label>
+      <label>Type of Event *
+        <select name="event" required>
+          <option value="">Select…</option>
+          <option>Wedding</option><option>Pre-wedding</option><option>Proposal</option>
+          <option>Birthday</option><option>Corporate</option><option>Commercial</option><option>Other</option>
+        </select>
+      </label>
+      <label>Event date<input type="date" name="date"></label>
+      <label>Message<textarea name="message" rows="4"></textarea></label>
+      <div class="captcha">
+        <span>Prove you’re human: what is <b id="qa">3</b> + <b id="qb">4</b>?</span>
+        <input type="number" id="ans" aria-label="Answer" required>
+        <button type="button" id="refresh" class="link">refresh</button>
+      </div>
+      <button type="submit" class="btn btn-fill">send and say hello</button>
+      <p class="form-msg" id="formMsg" role="status"></p>
+    </form>
+  </div>
+</section>
+
+<footer>© <span id="year"></span> Avaia Films. All rights reserved.</footer>
+
+<script src="script.js"></script>
+<script>
+  // JavaScript para sa Scroll Detection: Nakatago sa First Page at lilitaw lang kapag umabot na sa Films Section (2nd layer) pababa
+  window.addEventListener('scroll', function() {
+    const header = document.getElementById('header');
+    const filmsSection = document.getElementById('films');
+    
+    if (filmsSection) {
+      const filmsPosition = filmsSection.getBoundingClientRect().top;
+      if (filmsPosition <= 50) {
+        header.classList.add('visible');
+      } else {
+        header.classList.remove('visible');
+      }
+    }
+  });
+
+  // JavaScript para sa Popup Modal Player ng Grid Videos
+  function openVideoModal(videoSrc, title, type) {
+    const modal = document.getElementById('videoModal');
+    const video = document.getElementById('modalVideo');
+    const titleEl = document.getElementById('modalTitle');
+    const typeEl = document.getElementById('modalType');
+
+    video.src = videoSrc;
+    titleEl.textContent = title;
+    typeEl.textContent = type;
+    modal.classList.add('active');
+    video.play();
+  }
+
+  function closeVideoModal() {
+    const modal = document.getElementById('videoModal');
+    const video = document.getElementById('modalVideo');
+
+    video.pause();
+    video.src = '';
+    modal.classList.remove('active');
+  }
+
+  document.getElementById('videoModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+      closeVideoModal();
+    }
+  });
+
+  // JavaScript para sa Seamless Infinite Crossfade Slideshow
+  const aboutImgs = document.querySelectorAll('#aboutBg img');
+  let currentAboutIndex = 0;
+
+  if (aboutImgs.length > 0) {
+    aboutImgs.forEach(img => {
+      const preloadImg = new Image();
+      preloadImg.src = img.src;
+    });
+
+    setInterval(() => {
+      let nextIndex = (currentAboutIndex + 1) % aboutImgs.length;
+      aboutImgs[nextIndex].classList.add('on');
+      aboutImgs[currentAboutIndex].classList.remove('on');
+      currentAboutIndex = nextIndex;
+    }, 4000);
+  }
+</script>
+</body>
+</html>
